@@ -27,3 +27,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Development audit artifacts
+audit-*.png
+phase2-*.png
+phase3*.png
+techstack-shots.mjs
+audit-capture.mjs
+phase2-audit.mjs
+phase2-section-shots.mjs
+phase3a-hero-shots.mjs
+PRODUCTION_AUDIT.md
+vercel.json
+supabase/.temp/
