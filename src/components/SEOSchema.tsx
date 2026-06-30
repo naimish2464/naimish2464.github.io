@@ -31,13 +31,12 @@ const SEOSchema = () => {
             url: siteUrl,
             image: imageUrl,
             email: `mailto:${profile.email}`,
-            telephone: profile.whatsapp,
             address: {
               '@type': 'PostalAddress',
               addressCountry: 'IN',
               addressRegion: 'India',
             },
-            sameAs: [profile.github, profile.linkedin, profile.whatsappUrl],
+            sameAs: [profile.github, profile.linkedin],
           },
           {
             '@type': 'ProfessionalService',

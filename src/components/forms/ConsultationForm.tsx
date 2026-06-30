@@ -43,7 +43,6 @@ export function ConsultationForm() {
       {
         full_name: String(formData.get('full_name') ?? '').trim(),
         email: String(formData.get('email') ?? '').trim(),
-        phone: String(formData.get('phone') ?? '').trim(),
         company_name: String(formData.get('company_name') ?? '').trim() || undefined,
         service: String(formData.get('service') ?? '').trim(),
         budget_range: String(formData.get('budget_range') ?? '').trim(),
@@ -104,35 +103,18 @@ export function ConsultationForm() {
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="consultation-phone" className={labelClassName}>
-            WhatsApp Number
-          </label>
-          <input
-            id="consultation-phone"
-            type="tel"
-            name="phone"
-            required
-            disabled={isSubmitting}
-            className={inputClassName}
-            placeholder="+91 98765 43210"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="consultation-company" className={labelClassName}>
-            Company Name
-          </label>
-          <input
-            id="consultation-company"
-            type="text"
-            name="company_name"
-            disabled={isSubmitting}
-            className={inputClassName}
-            placeholder="Optional"
-          />
-        </div>
+      <div>
+        <label htmlFor="consultation-company" className={labelClassName}>
+          Company Name
+        </label>
+        <input
+          id="consultation-company"
+          type="text"
+          name="company_name"
+          disabled={isSubmitting}
+          className={inputClassName}
+          placeholder="Optional"
+        />
       </div>
 
       <div className="grid sm:grid-cols-2 gap-6">

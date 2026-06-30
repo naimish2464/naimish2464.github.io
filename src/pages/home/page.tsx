@@ -583,10 +583,6 @@ const HomePage = () => {
                   <a href={`mailto:${profile.email}`} className="text-gray-300 hover:text-cyan-300 transition-colors">{profile.email}</a>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <i className="ri-whatsapp-line text-green-400 text-xl"></i>
-                  <a href={profile.whatsappUrl} {...externalLinkProps} className="text-gray-300 hover:text-cyan-300 transition-colors">{profile.whatsapp}</a>
-                </div>
-                <div className="flex items-center space-x-4">
                   <i className="ri-map-pin-line text-cyan-400 text-xl"></i>
                   <span className="text-gray-300">India | Remote Worldwide</span>
                 </div>
@@ -599,9 +595,6 @@ const HomePage = () => {
               <div className="flex space-x-4">
                 <a href={profile.linkedin} {...externalLinkProps} aria-label="LinkedIn" className="w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300">
                   <i className="ri-linkedin-line text-cyan-400"></i>
-                </a>
-                <a href={profile.whatsappUrl} {...externalLinkProps} aria-label="WhatsApp" className="w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300">
-                  <i className="ri-whatsapp-line text-green-400"></i>
                 </a>
                 <a href={profile.github} {...externalLinkProps} aria-label="GitHub" className="w-12 h-12 bg-white/5 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300">
                   <i className="ri-github-line text-purple-400"></i>
@@ -661,7 +654,6 @@ const HomePage = () => {
               <div className="space-y-2 sm:text-right">
                 <button type="button" onClick={() => scrollToSection('contact')} className="btn-nav block sm:ml-auto text-left sm:text-right text-gray-400 hover:text-cyan-400 transition-colors">Contact Form</button>
                 <a href={`mailto:${profile.email}`} className="block text-gray-400 hover:text-cyan-400 transition-colors">{profile.email}</a>
-                <a href={profile.whatsappUrl} {...externalLinkProps} className="block text-gray-400 hover:text-cyan-400 transition-colors">{profile.whatsapp}</a>
               </div>
             </div>
           </div>
