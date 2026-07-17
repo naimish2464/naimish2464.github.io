@@ -1,27 +1,35 @@
 import { profile } from './profile';
 
 export const siteMeta = {
-  title: 'Nymiss K | Freelance Full-Stack Developer & AI Automation Specialist',
+  title: 'Naimish K | Full Stack Developer, Python & AI Engineer',
   description:
-    'I help businesses build high-performance websites, web applications, and automation systems that drive growth, save time, and improve customer experiences.',
+    'Full stack developer and AI engineer building web apps, Django/FastAPI backends, React frontends, and practical AI automation for startups and growing teams.',
   keywords: [
-    'Freelance Developer',
     'Full Stack Developer',
-    'Web Developer',
-    'AI Automation Developer',
+    'Python Developer',
+    'Django Developer',
     'React Developer',
-    'Node.js Developer',
-    'API Integration Expert',
-    'Website Development',
-    'Web Application Development',
-    'India Freelance Developer',
+    'AI Engineer',
+    'AI Developer',
+    'FastAPI Developer',
+    'Machine Learning Developer',
+    'LangChain Developer',
+    'LLM Developer',
+    'API Integration',
+    'Web Development',
+    'SaaS Development',
+    'AI Automation',
+    'Backend Development',
+    'Frontend Development',
+    'Freelance Developer India',
   ],
   author: profile.name,
-  siteName: profile.name,
+  siteName: `${profile.name} Portfolio`,
   locale: 'en_IN',
   themeColor: '#05070b',
   backgroundColor: '#05070b',
   twitterHandle: '@nymiss',
+  jobTitle: 'Full Stack Developer & AI Engineer',
   services: [
     'Website Development',
     'Web Applications',
@@ -38,3 +46,27 @@ export function getSiteUrl(): string {
 export function getOgImageUrl(): string {
   return `${getSiteUrl()}/og-image.jpg`;
 }
+
+export type PageMeta = {
+  title: string;
+  description: string;
+  path?: string;
+  robots?: string;
+  type?: 'website' | 'profile';
+};
+
+export const homePageMeta: PageMeta = {
+  title: siteMeta.title,
+  description: siteMeta.description,
+  path: '/',
+  robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+  type: 'website',
+};
+
+export const notFoundPageMeta: PageMeta = {
+  title: `Page Not Found | ${profile.name}`,
+  description: 'This page does not exist. Return to the homepage to explore projects, services, and contact options.',
+  path: '/404',
+  robots: 'noindex, nofollow',
+  type: 'website',
+};

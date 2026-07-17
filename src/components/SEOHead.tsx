@@ -1,5 +1,13 @@
 import { useEffect } from 'react';
-import { getOgImageUrl, getSiteUrl, siteMeta } from '../data/siteMeta';
+import { useLocation } from 'react-router-dom';
+import {
+  getOgImageUrl,
+  getSiteUrl,
+  homePageMeta,
+  notFoundPageMeta,
+  siteMeta,
+  type PageMeta,
+} from '../data/siteMeta';
 
 function upsertMeta(attribute: 'name' | 'property', key: string, content: string) {
   let element = document.querySelector(`meta[${attribute}="${key}"]`);
@@ -25,34 +33,55 @@ function upsertLink(rel: string, href: string) {
   element.href = href;
 }
 
+function resolvePageMeta(pathname: string): PageMeta {
+  if (pathname === '/' || pathname === '') {
+    return homePageMeta;
+  }
+  return notFoundPageMeta;
+}
+
 export default function SEOHead() {
+  const location = useLocation();
+
   useEffect(() => {
     const siteUrl = getSiteUrl();
     const ogImage = getOgImageUrl();
+    const page = resolvePageMeta(location.pathname);
+    const canonicalPath = page.path === '/404' ? location.pathname : page.path || '/';
+    const canonicalUrl =
+      page.path === '/404'
+        ? `${siteUrl}${location.pathname}`
+        : `${siteUrl}${canonicalPath === '/' ? '/' : canonicalPath}`;
 
-    document.title = siteMeta.title;
-    upsertMeta('name', 'description', siteMeta.description);
+    document.title = page.title;
+    document.documentElement.lang = 'en';
+
+    upsertMeta('name', 'description', page.description);
     upsertMeta('name', 'keywords', siteMeta.keywords.join(', '));
     upsertMeta('name', 'author', siteMeta.author);
     upsertMeta('name', 'theme-color', siteMeta.themeColor);
-    upsertMeta('name', 'robots', 'index, follow');
-    upsertMeta('name', 'googlebot', 'index, follow');
+    upsertMeta('name', 'robots', page.robots || 'index, follow');
+    upsertMeta('name', 'googlebot', page.robots || 'index, follow');
 
-    upsertLink('canonical', siteUrl);
+    upsertLink('canonical', canonicalUrl);
 
-    upsertMeta('property', 'og:title', siteMeta.title);
-    upsertMeta('property', 'og:description', siteMeta.description);
+    upsertMeta('property', 'og:title', page.title);
+    upsertMeta('property', 'og:description', page.description);
     upsertMeta('property', 'og:image', ogImage);
-    upsertMeta('property', 'og:url', siteUrl);
-    upsertMeta('property', 'og:type', 'website');
+    upsertMeta('property', 'og:image:alt', `${siteMeta.author} — ${siteMeta.jobTitle}`);
+    upsertMeta('property', 'og:url', canonicalUrl);
+    upsertMeta('property', 'og:type', page.type || 'website');
     upsertMeta('property', 'og:site_name', siteMeta.siteName);
     upsertMeta('property', 'og:locale', siteMeta.locale);
 
     upsertMeta('name', 'twitter:card', 'summary_large_image');
-    upsertMeta('name', 'twitter:title', siteMeta.title);
-    upsertMeta('name', 'twitter:description', siteMeta.description);
+    upsertMeta('name', 'twitter:site', siteMeta.twitterHandle);
+    upsertMeta('name', 'twitter:creator', siteMeta.twitterHandle);
+    upsertMeta('name', 'twitter:title', page.title);
+    upsertMeta('name', 'twitter:description', page.description);
     upsertMeta('name', 'twitter:image', ogImage);
-  }, []);
+    upsertMeta('name', 'twitter:image:alt', `${siteMeta.author} — ${siteMeta.jobTitle}`);
+  }, [location.pathname]);
 
   return null;
 }

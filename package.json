@@ -7,6 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "generate:favicons": "node scripts/generate-favicons.mjs",
+    "generate:og-image": "node scripts/generate-og-image.mjs",
+    "generate:seo-assets": "npm run generate:favicons && npm run generate:og-image",
+    "optimize:images": "node scripts/optimize-images.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

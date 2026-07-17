@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# Block soft-404 crawl noise if any
+Disallow: /404
+
 Sitemap: https://nymiss.dev/sitemap.xml
