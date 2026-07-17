@@ -16,7 +16,7 @@ import { ContactForm } from '../../components/forms/ContactForm';
 import { ConsultationForm } from '../../components/forms/ConsultationForm';
 import { loadProjects, getStaticProjects } from '../../lib/projectFetcher';
 import type { Project } from '../../types/project';
-import deskImage from '../../assets/desk.png';
+import deskImage from '../../assets/_desk.png';
 
 const HomePage = () => {
   const [isVisible, setIsVisible] = useState(false);
