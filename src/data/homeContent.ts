@@ -12,7 +12,7 @@ export const aboutContent = {
   h2Line1: 'Full Stack Developer',
   h2Line2: '& AI Automation Specialist',
   intro:
-    'I am a full stack developer with 5+ years of experience shipping web apps, APIs, and AI-assisted workflows. Most of my work sits at the intersection of React, Python (Django/FastAPI), and practical LLM tooling — the kind that solves a real business problem, not a demo.',
+    'I am a full stack developer with 2+ years of experience shipping web apps, APIs, and AI-assisted workflows. Most of my work sits at the intersection of React, Python (Django/FastAPI), and practical LLM tooling — the kind that solves a real business problem, not a demo.',
   body:
     'If you need a Django developer for a SaaS backend, a React developer for a customer-facing product, or an AI engineer to automate hiring, ops, or support — that is the work I take on. I stay involved from architecture through deployment so you get something maintainable, not a hand-off surprise.',
   skills: [
@@ -24,10 +24,8 @@ export const aboutContent = {
     'Cloud deployment, monitoring & ongoing maintenance',
   ],
   timeline: [
-    { year: '2024', title: 'AI Engineer & Automation Specialist', company: 'Freelance — AI products & SaaS' },
-    { year: '2023', title: 'Full Stack Developer', company: 'Tech startup — product & platform' },
-    { year: '2022', title: 'Backend Developer', company: 'Software company — APIs & services' },
-    { year: '2020', title: 'Junior Developer', company: 'First professional role' },
+    { year: '2025', title: 'AI Engineer & Automation Specialist', company: 'Freelance — AI products & SaaS' },
+    { year: '2024', title: 'Full Stack Developer', company: 'Tech startup — product & platform' },
   ],
 } as const;
 

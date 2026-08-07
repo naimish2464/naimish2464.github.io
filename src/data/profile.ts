@@ -2,7 +2,7 @@ import avatarImage from '../assets/profile.png';
 
 export const profile = {
   name: 'Naimish K',
-  experienceYears: '5+',
+  experienceYears: '2+',
   email: 'contact.nymiss@gmail.com',
   github: 'https://github.com/naimish2464',
   linkedin: 'https://www.linkedin.com/in/nymiss',
