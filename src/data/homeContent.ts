@@ -5,6 +5,20 @@ export const heroContent = {
     'I build React frontends, Python backends, and AI automation that help founders cut busywork, launch faster, and grow with systems they can trust.',
   primaryCta: 'Book a Free Call',
   secondaryCta: 'See My Work',
+  proofLine: '2+ Years Experience • 15+ Projects • Available Worldwide',
+} as const;
+
+export const marqueeContent = {
+  designations: [
+    'Full Stack Systems',
+    'AI Product Engineering',
+    'Automation Pipelines',
+    'React Interfaces',
+    'Python Backends',
+    'SaaS Architecture',
+    'API Platforms',
+    'LLM Workflows',
+  ],
 } as const;
 
 export const aboutContent = {

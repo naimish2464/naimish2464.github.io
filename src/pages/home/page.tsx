@@ -14,9 +14,49 @@ import {
 } from '../../data/homeContent';
 import { ContactForm } from '../../components/forms/ContactForm';
 import { ConsultationForm } from '../../components/forms/ConsultationForm';
+import { HeroIdentity } from '../../components/HeroIdentity';
+import { MarqueeSection } from '../../components/MarqueeSection';
+import { ParticlesBackground } from '../../components/ParticlesBackground';
 import { loadProjects, getStaticProjects } from '../../lib/projectFetcher';
 import type { Project } from '../../types/project';
 import deskImage from '../../assets/_desk.png';
+
+/** Fixed navbar offset from --header-offset (falls back to measuring the nav bar). */
+function getHeaderOffsetPx(): number {
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue('--header-offset')
+    .trim();
+
+  if (raw.endsWith('rem')) {
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    return parseFloat(raw) * rootFontSize;
+  }
+
+  if (raw.endsWith('px')) {
+    return parseFloat(raw);
+  }
+
+  const nav = document.querySelector<HTMLElement>('nav[aria-label="Main navigation"]');
+  const bar = nav?.querySelector<HTMLElement>('.container-shell > div');
+  return bar?.getBoundingClientRect().height ?? 64;
+}
+
+/** Smooth-scroll so the section top sits just below the fixed navbar. */
+function scrollToSectionById(sectionId: string) {
+  const element = document.getElementById(sectionId);
+  if (!element) return;
+
+  const targetTop = Math.max(
+    0,
+    element.getBoundingClientRect().top + window.scrollY - getHeaderOffsetPx(),
+  );
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  window.scrollTo({
+    top: targetTop,
+    behavior: reduceMotion ? 'auto' : 'smooth',
+  });
+}
 
 const HomePage = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -61,18 +101,15 @@ const HomePage = () => {
     if (!hash) return;
 
     const timer = window.setTimeout(() => {
-      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      scrollToSectionById(hash);
     }, 100);
 
     return () => window.clearTimeout(timer);
   }, []);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      window.history.replaceState(null, '', `#${sectionId}`);
-    }
+    scrollToSectionById(sectionId);
+    window.history.replaceState(null, '', `#${sectionId}`);
     setIsMobileMenuOpen(false);
   };
 
@@ -80,7 +117,7 @@ const HomePage = () => {
     'btn-nav text-gray-300 hover:text-cyan-400 transition-colors duration-300 font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-x-clip">
       <a href="#main" className="sr-only">
         Skip to main content
       </a>
@@ -185,33 +222,37 @@ const HomePage = () => {
         </div>
       </nav>
 
-      <div className="fixed inset-0 opacity-20 pointer-events-none" aria-hidden="true">
+      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <ParticlesBackground />
+      </div>
+
+      <div className="fixed inset-0 z-[1] opacity-20 pointer-events-none" aria-hidden="true">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-cyan-500/10 animate-pulse"></div>
       </div>
 
-      <main id="main">
-        <section id="home" aria-labelledby="hero-heading" className="relative min-h-screen flex items-center section-shell pt-28">
-          <div className={`container-shell grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/15 bg-white/5">
-                <span className="w-2 h-2 rounded-full bg-cyan-400" aria-hidden="true"></span>
-                <span className="text-xs font-semibold uppercase tracking-wider text-cyan-300">{heroContent.availability}</span>
+      <main id="main" className="relative z-10">
+        <section id="home" aria-labelledby="hero-heading" className="hero-section relative min-h-screen flex items-center section-shell pt-28">
+          <div className="container-shell grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-20 items-center">
+            <div className={`hero-copy space-y-7 sm:space-y-8 ${isVisible ? 'is-visible' : ''}`}>
+              <div className="hero-status hero-reveal" style={{ '--hero-delay': '0ms' } as React.CSSProperties}>
+                <span className="hero-status__dot" aria-hidden="true" />
+                <span className="hero-status__label">{heroContent.availability}</span>
               </div>
 
-              <div className="space-y-5">
-                <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1]">
+              <div className="space-y-5 hero-reveal" style={{ '--hero-delay': '80ms' } as React.CSSProperties}>
+                <h1 id="hero-heading" className="hero-heading text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight text-white leading-[1.08]">
                   {heroContent.h1}
                 </h1>
-                <p className="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed">
+                <p className="text-lg sm:text-xl text-slate-300 max-w-xl leading-relaxed">
                   {heroContent.subtitle}
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 hero-reveal" style={{ '--hero-delay': '160ms' } as React.CSSProperties}>
                 <a
                   href="#consultation"
                   onClick={(e) => { e.preventDefault(); scrollToSection('consultation'); }}
-                  className="btn-base btn-primary px-8 py-4"
+                  className="btn-base btn-primary hero-cta-primary px-8 py-4"
                 >
                   {heroContent.primaryCta}
                   <i className="ri-arrow-right-line" aria-hidden="true"></i>
@@ -219,73 +260,34 @@ const HomePage = () => {
                 <a
                   href="#projects"
                   onClick={(e) => { e.preventDefault(); scrollToSection('projects'); }}
-                  className="btn-base btn-secondary px-8 py-4"
+                  className="btn-base btn-secondary hero-cta-secondary px-8 py-4"
                 >
                   {heroContent.secondaryCta}
                 </a>
               </div>
 
-              <p className="text-sm text-slate-400">
+              <p className="hero-proof hero-reveal" style={{ '--hero-delay': '220ms' } as React.CSSProperties}>
+                {heroContent.proofLine}
+              </p>
+
+              <p className="text-sm text-slate-500 hero-reveal" style={{ '--hero-delay': '280ms' } as React.CSSProperties}>
                 Looking for{' '}
-                <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }} className="text-cyan-300 hover:text-cyan-200 underline underline-offset-2">
+                <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }} className="text-cyan-400/90 hover:text-cyan-300 underline underline-offset-2">
                   web development or AI automation services
                 </a>
                 ? Or jump to{' '}
-                <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }} className="text-cyan-300 hover:text-cyan-200 underline underline-offset-2">
+                <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }} className="text-cyan-400/90 hover:text-cyan-300 underline underline-offset-2">
                   my background
                 </a>
                 .
               </p>
             </div>
 
-            <aside className="card-elevated p-6 sm:p-8 space-y-6" aria-label="Developer profile summary">
-              <div className="flex items-center gap-4">
-                <img
-                  src={profile.avatarUrl}
-                  alt={`Portrait of ${profile.name}, full stack developer and AI engineer`}
-                  width={64}
-                  height={64}
-                  fetchPriority="high"
-                  className="w-16 h-16 rounded-xl object-cover border border-white/15"
-                />
-                <div>
-                  <p className="text-lg font-semibold text-white">{profile.name}</p>
-                  <p className="text-sm text-slate-400">Full Stack Developer & AI Engineer</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="card-base p-4">
-                  <p className="text-2xl font-bold text-white">{profile.experienceYears}</p>
-                  <p className="text-xs uppercase tracking-wider text-slate-400 mt-1">Years Experience</p>
-                </div>
-                <div className="card-base p-4">
-                  <p className="text-2xl font-bold text-white">15+</p>
-                  <p className="text-xs uppercase tracking-wider text-slate-400 mt-1">Projects Completed</p>
-                </div>
-              </div>
-
-              <ul className="space-y-3 text-sm text-slate-300">
-                <li className="flex items-start gap-3">
-                  <i className="ri-map-pin-line text-cyan-400 mt-0.5" aria-hidden="true"></i>
-                  <span>India · Remote worldwide</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <i className="ri-briefcase-line text-cyan-400 mt-0.5" aria-hidden="true"></i>
-                  <span>Available for new projects</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <i className="ri-time-line text-cyan-400 mt-0.5" aria-hidden="true"></i>
-                  <span>Response within 24 hours</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <i className="ri-mail-line text-cyan-400 mt-0.5" aria-hidden="true"></i>
-                  <a href={`mailto:${profile.email}`} className="hover:text-cyan-300 transition-colors">{profile.email}</a>
-                </li>
-              </ul>
-            </aside>
+            <HeroIdentity visible={isVisible} />
           </div>
         </section>
+
+        <MarqueeSection />
 
         <section id="about" aria-labelledby="about-heading" className="section-shell">
           <div className="container-shell">
@@ -346,7 +348,7 @@ const HomePage = () => {
                   <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-400 to-purple-400" aria-hidden="true"></div>
                   {aboutContent.timeline.map((item) => (
                     <div key={item.year} className="relative flex items-center space-x-6 pb-8">
-                      <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center text-sm font-bold shrink-0">
+                      <div className="timeline-year">
                         {item.year.slice(-2)}
                       </div>
                       <div>
@@ -403,38 +405,81 @@ const HomePage = () => {
 
         <section id="services" aria-labelledby="services-heading" className="section-shell">
           <div className="container-shell">
-            <div className="text-center mb-16">
-              <h2 id="services-heading" className="text-4xl font-bold mb-4 text-white">{servicesContent.h2}</h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">{servicesContent.intro}</p>
-            </div>
+            <div className="services-layout">
+              <aside className="services-aside" aria-label="Services overview">
+                <div className="services-aside__inner">
+                  <p className="services-aside__eyebrow">Services</p>
+                  <p className="services-aside__title">What I build</p>
+                  <a
+                    href="#consultation"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection('consultation');
+                    }}
+                    className="services-aside__cta"
+                  >
+                    {heroContent.primaryCta}
+                    <i className="ri-arrow-right-line" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </aside>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {servicesContent.items.map((service) => (
-                <article key={service.title} className="card-elevated p-8">
-                  <div className="w-14 h-14 bg-cyan-500/10 border border-cyan-400/30 rounded-xl flex items-center justify-center mb-6">
-                    <i className={`${service.icon} text-cyan-400 text-2xl`} aria-hidden="true"></i>
-                  </div>
-                  <h3 className="text-2xl font-semibold text-white mb-3">{service.title}</h3>
-                  <p className="text-gray-300 mb-5 leading-relaxed">{service.outcome}</p>
-                  <div className="border-t border-white/10 pt-4">
-                    <p className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Who it is for</p>
-                    <p className="text-sm text-gray-400 leading-relaxed">{service.forWho}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
+              <div className="services-main">
+                <header className="services-header">
+                  <h2 id="services-heading" className="text-4xl font-bold mb-4 text-white">
+                    {servicesContent.h2}
+                  </h2>
+                  <p className="text-gray-400 max-w-2xl">{servicesContent.intro}</p>
+                </header>
 
-            <p className="text-center mt-10 text-sm text-slate-400">
-              Ready to scope a project?{' '}
-              <a href="#consultation" onClick={(e) => { e.preventDefault(); scrollToSection('consultation'); }} className="text-cyan-300 hover:text-cyan-200 underline underline-offset-2">
-                Book a free consultation
-              </a>{' '}
-              or browse{' '}
-              <a href="#projects" onClick={(e) => { e.preventDefault(); scrollToSection('projects'); }} className="text-cyan-300 hover:text-cyan-200 underline underline-offset-2">
-                featured case studies
-              </a>
-              .
-            </p>
+                <ul className="services-list">
+                  {servicesContent.items.map((service, index) => (
+                    <li key={service.title} className="services-item">
+                      <article className="services-row">
+                        <span className="services-row__index" aria-hidden="true">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        <div className="services-row__body">
+                          <h3 className="services-row__title">{service.title}</h3>
+                          <p className="services-row__outcome">{service.outcome}</p>
+                          <div className="services-row__for">
+                            <p className="services-row__for-label">Who it is for</p>
+                            <p className="services-row__for-text">{service.forWho}</p>
+                          </div>
+                        </div>
+                        <span className="services-row__line" aria-hidden="true" />
+                      </article>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="services-footer-note">
+                  Ready to scope a project?{' '}
+                  <a
+                    href="#consultation"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection('consultation');
+                    }}
+                    className="text-cyan-300 hover:text-cyan-200 underline underline-offset-2"
+                  >
+                    Book a free consultation
+                  </a>{' '}
+                  or browse{' '}
+                  <a
+                    href="#projects"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection('projects');
+                    }}
+                    className="text-cyan-300 hover:text-cyan-200 underline underline-offset-2"
+                  >
+                    featured case studies
+                  </a>
+                  .
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -634,7 +679,7 @@ const HomePage = () => {
         </section>
       </main>
 
-      <footer className="section-shell bg-black/40" aria-label="Site footer">
+      <footer className="relative z-10 section-shell bg-black/40" aria-label="Site footer">
         <div className="container-shell">
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-12">
             <div className="flex items-center space-x-3">
